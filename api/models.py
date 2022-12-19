@@ -58,9 +58,9 @@ class Team(BaseModel):
 
 
 class TeamVote(BaseModel):
-    userPk = models.OneToOneField("User",
-                                  on_delete=models.CASCADE,
-                                  related_name="TeamVoteUserPk")
+    userPk = models.ForeignKey("User",
+                               on_delete=models.CASCADE,
+                               related_name="TeamVoteUserPk")
     teamPk = models.ForeignKey("Team",
                                on_delete=models.CASCADE,
                                related_name="TeamVoteTeamPk")

@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,6 +27,35 @@ class UserViewSet(viewsets.ModelViewSet):
         user.delete()
         user.save()
         return Response(data='delete user success')
+
+
+class TeamViewSet(viewsets.ModelViewSet):
+    serializer_class = TeamSerializer
+    queryset = Team.objects.all()
+
+    filter_backends = (DjangoFilterBackend, OrderingFilter)
+    # filterset_class = TeamFilter
+    ordering_fields = ['count', 'name']
+    ordering = ['name']
+
+    lookup_body_field = 'name'
+
+    def put(self, pk=None):
+        lookup_value = self.request.data.get(self.lookup_body_field)
+        if not lookup_value:
+            raise ValidationError({self.lookup_body_field: "This field is mandatory"})
+
+        obj = self.get_queryset().filter(**{self.lookup_body_field: lookup_value}).last()
+        if not obj:
+            return self.create(request=self.request)
+        else:
+            self.kwargs['pk'] = obj.pk
+
+            self.request.data._mutable = True
+            self.request.data['count'] = obj.count+1
+            self.request.data._mutable = False
+
+            return self.update(request=self.request)
 
 
 class TeamView(APIView):

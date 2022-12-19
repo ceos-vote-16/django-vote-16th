@@ -7,6 +7,7 @@ router = routers.DefaultRouter()
 
 # router
 # router.register('user', UserViewSet)
+router.register('votes/team', TeamViewSet, basename='Team-ViewSet')
 
 urlpatterns = [
     path('', include(router.urls)),
