@@ -30,3 +30,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password', 'is_active',
                   'team', 'part',
                   'created_at', 'deleted_at']
+
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ['name', 'count']
+
+class TeamVoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamVote
+        fields = ['userPk', 'teamPk']

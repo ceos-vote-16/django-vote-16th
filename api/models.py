@@ -21,7 +21,7 @@ class BaseModel(models.Model):
 
 
 class User(AbstractUser, BaseModel):
-    email = models.EmailField(max_length=256, unique=True, verbose_name='사용자 이메일')
+    email = models.EmailField(max_length=254, unique=True, verbose_name='사용자 이메일')
     password = models.CharField(max_length=128, null=False, verbose_name='사용자 비밀 번호')
 
     TEAM_CHOICES = [
@@ -47,3 +47,23 @@ class User(AbstractUser, BaseModel):
 
     def __str__(self):
         return self.username
+
+
+class Team(BaseModel):
+    name = models.CharField(max_length=150, unique=True)
+    count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+
+class TeamVote(BaseModel):
+    userPk = models.OneToOneField("User",
+                                  on_delete=models.CASCADE,
+                                  related_name="TeamVoteUserPk")
+    teamPk = models.ForeignKey("Team",
+                               on_delete=models.CASCADE,
+                               related_name="TeamVoteTeamPk")
+
+    def __str__(self):
+        return "TeamVote"
