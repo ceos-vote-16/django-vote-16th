@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 # primary key 자동 생성
 from api.utils.managers import UserManager
 
+
 class BaseModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -18,9 +19,25 @@ class BaseModel(models.Model):
         self.deleted_at = datetime.now()
         self.save()
 
+
 class User(AbstractUser, BaseModel):
-    email = models.EmailField(max_length=254, unique=True, verbose_name='사용자 이메일')
+    email = models.EmailField(max_length=256, unique=True, verbose_name='사용자 이메일')
     password = models.CharField(max_length=128, null=False, verbose_name='사용자 비밀 번호')
+
+    TEAM_CHOICES = [
+        ("Team", "Teample"),
+        ("FMN", "Forget Me Not"),
+        ("PF", "Pre:Folio"),
+        ("DM", "diaMEtes"),
+        ("RE", "recipeasy"),
+    ]
+    team = models.CharField(max_length=30, choices=TEAM_CHOICES, default='')
+
+    PART_CHOICES = [
+        ("BE", "BackEnd"),
+        ("FE", "FrontEnd"),
+    ]
+    part = models.CharField(max_length=10, choices=PART_CHOICES, default='')
 
     # customize model
     USERNAME_FIELD = 'username'
