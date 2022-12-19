@@ -59,3 +59,39 @@ class TeamView(APIView):
             team_vote_serializer.save()
             return JsonResponse(custom_response(200), status=200)
         return JsonResponse(custom_response(404), status=404)
+
+
+class CendidateView(APIView):
+    def get(self, request):
+        try:
+            cendidates = Cendidate.objects.all()
+            serializer = CendidateSerializer(cendidates, many=True)
+            return JsonResponse(custom_response(200, serializer.data), status=200)
+        except:
+            return JsonResponse(custom_response(401), status=401)
+
+    def post(self, request):
+        # cendidate valid check
+        cendidate_name = request.data.get("cendidatename")
+        chosen_cendidate = Cendidate.objects.get(name=cendidate_name)
+        if chosen_cendidate is None:
+            return JsonResponse(custom_response(400), status=400)
+
+        # user valid check
+        user_name = request.data.get("username")
+        chosen_user = User.objects.get(username=user_name)
+        if chosen_user is None:
+            return JsonResponse(custom_response(400), status=400)
+
+        # part valid check
+
+        chosen_cendidate.count = chosen_cendidate.count + 1
+        chosen_cendidate.save()
+        cendidate_vote_serializer = CendidateVoteSerializer(data={
+            'userPk': chosen_user.id,
+            'cendidatePk': chosen_cendidate.id
+        })
+        if cendidate_vote_serializer.is_valid():
+            cendidate_vote_serializer.save()
+            return JsonResponse(custom_response(200), status=200)
+        return JsonResponse(custom_response(404), status=404)

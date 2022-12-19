@@ -67,3 +67,24 @@ class TeamVote(BaseModel):
 
     def __str__(self):
         return "TeamVote"
+
+
+class Cendidate(BaseModel):
+    name = models.CharField(max_length=150, unique=True)
+    part = models.CharField(max_length=30)
+    count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+
+class CendidateVote(BaseModel):
+    userPk = models.OneToOneField("User",
+                                  on_delete=models.CASCADE,
+                                  related_name="CendidateVoteUserPk")
+    cendidatePk = models.ForeignKey("Cendidate",
+                                    on_delete=models.CASCADE,
+                                    related_name="CendidateVoteCendidatePk")
+
+    def __str__(self):
+        return "CendidateVote"

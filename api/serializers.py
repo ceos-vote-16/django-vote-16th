@@ -9,6 +9,7 @@ class CustomRegisterSerializer(RegisterSerializer):
     Team = serializers.CharField()
     Part = serializers.CharField()
 
+
 class UserSerializer(serializers.ModelSerializer):
     user_team = serializers.SerializerMethodField()
     user_part = serializers.SerializerMethodField()
@@ -21,12 +22,26 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password', 'is_active',
                   'created_at', 'deleted_at']
 
+
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = ['name', 'count']
 
+
 class TeamVoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamVote
         fields = ['userPk', 'teamPk']
+
+
+class CendidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cendidate
+        fields = ['name', 'count', 'part']
+
+
+class CendidateVoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CendidateVote
+        fields = ['userPk', 'cendidatePk']
