@@ -6,7 +6,6 @@ from django.contrib.auth.models import AbstractUser
 # primary key 자동 생성
 from api.utils.managers import UserManager
 
-
 class BaseModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
