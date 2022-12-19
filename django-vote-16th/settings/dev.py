@@ -2,6 +2,8 @@ from .base import *  # noqa
 
 DEBUG = True
 
+# '_mysql' is not defined 관련 추가적 설정
+pymysql.install_as_MySQLdb()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
