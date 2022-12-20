@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 
-from api.common import custom_response
+from api.common import custom_response, CustomRenderer
 from api.permission import IsAuthenticatedInPutReq
 from api.serializers import *
 from api.utils.filters import *
@@ -35,6 +35,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = TeamSerializer
     queryset = Team.objects.all()
     permission_classes = [IsAuthenticatedInPutReq]
+    renderer_classes = [CustomRenderer]
 
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     ordering_fields = ['count', 'name']
@@ -71,6 +72,7 @@ class CandidateViewSet(viewsets.ModelViewSet):
     serializer_class = CandidateSerializer
     queryset = Candidate.objects.all()
     permission_classes = [IsAuthenticatedInPutReq]
+    renderer_classes = [CustomRenderer]
 
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     ordering_fields = ['count', 'name']
