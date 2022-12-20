@@ -18,6 +18,7 @@ class UserDetailCustomSerializer(auth_serializers.UserDetailsSerializer):
         read_only_fields = ('username',)
 
 
+
 class UserSerializer(serializers.ModelSerializer):
     user_team = serializers.SerializerMethodField()
     user_part = serializers.SerializerMethodField()
@@ -31,12 +32,26 @@ class UserSerializer(serializers.ModelSerializer):
                   'team', 'part',
                   'created_at', 'deleted_at']
 
+
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = ['name', 'count']
 
+
 class TeamVoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamVote
         fields = ['userPk', 'teamPk']
+
+
+class CandidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Candidate
+        fields = ['name', 'count', 'part']
+
+
+class CandidateVoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CandidateVote
+        fields = ['userPk', 'candidatePk']

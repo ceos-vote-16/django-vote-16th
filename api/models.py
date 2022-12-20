@@ -67,3 +67,24 @@ class TeamVote(BaseModel):
 
     def __str__(self):
         return "TeamVote"
+
+
+class Candidate(BaseModel):
+    name = models.CharField(max_length=150, unique=True)
+    part = models.CharField(max_length=30)
+    count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+
+class CandidateVote(BaseModel):
+    userPk = models.ForeignKey("User",
+                                  on_delete=models.CASCADE,
+                                  related_name="CandidateVoteUserPk")
+    candidatePk = models.ForeignKey("Candidate",
+                                    on_delete=models.CASCADE,
+                                    related_name="CandidateVoteCandidatePk")
+
+    def __str__(self):
+        return "CandidateVote"
