@@ -19,6 +19,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     filterset_class = UserFilter
+    ordering_fields = ['name', 'team', 'part']
 
     def destroy(self, request, *args, **kwargs):
         user = self.get_object()
