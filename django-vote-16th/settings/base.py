@@ -70,6 +70,7 @@ SITE_ID = 1
 # LOGOUT_REDIRECT_URL = '/'
 
 REST_USE_JWT = True
+REST_SESSION_LOGIN = True
 JWT_AUTH_COOKIE = 'api-auth'
 JWT_AUTH_REFRESH_COOKIE = 'api-refresh-token'
 
