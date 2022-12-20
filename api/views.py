@@ -71,7 +71,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 class CandidateViewSet(viewsets.ModelViewSet):
     serializer_class = CandidateSerializer
     queryset = Candidate.objects.all()
-    permission_classes = [IsAuthenticatedInPutReq]
+    # permission_classes = [IsAuthenticatedInPutReq]
     renderer_classes = [CustomRenderer]
 
     filter_backends = (DjangoFilterBackend, OrderingFilter)
