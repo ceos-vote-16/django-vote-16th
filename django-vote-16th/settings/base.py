@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'dj_rest_auth.registration',
+    # cors
+    'corsheaders',
 ]
 SITE_ID = 1
 
@@ -104,7 +106,16 @@ JWT_AUTH = {
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=3),
 }
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = (
+    # "https://example.com",
+    "http://localhost:3000",
+    "http://127.0.0.1:8000"
+)
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
