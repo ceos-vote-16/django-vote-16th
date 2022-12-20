@@ -41,21 +41,29 @@ class TeamViewSet(viewsets.ModelViewSet):
     lookup_body_field = 'name'
 
     def put(self, pk=None):
-        lookup_value = self.request.data.get(self.lookup_body_field)
-        if not lookup_value:
-            raise ValidationError({self.lookup_body_field: "This field is mandatory"})
+        try:
+            # 검사 추가
+            lookup_value = self.request.data.get(self.lookup_body_field)
+            if not lookup_value:
+                raise ValidationError({self.lookup_body_field: "This field is mandatory"})
 
-        obj = self.get_queryset().filter(**{self.lookup_body_field: lookup_value}).last()
-        if not obj:
-            return self.create(request=self.request)
-        else:
-            self.kwargs['pk'] = obj.pk
-
-            self.request.data._mutable = True
-            self.request.data['count'] = obj.count + 1
-            self.request.data._mutable = False
-
-            return self.update(request=self.request)
+            team = self.get_queryset().filter(**{self.lookup_body_field: lookup_value}).last()
+            if not team:
+                return JsonResponse(custom_response(404), status=404)
+            else:
+                user = self.request.user
+                team.count = team.count + 1
+                team.save()
+                team_vote_serializer = TeamVoteSerializer(data={
+                    'userPk': user.id,
+                    'teamPk': team.id
+                })
+                if team_vote_serializer.is_valid():
+                    team_vote_serializer.save()
+                    return JsonResponse(custom_response(200), status=200)
+                return JsonResponse(custom_response(404), status=404)
+        except:
+            return JsonResponse(custom_response(404), status=404)
 
 
 class CandidateViewSet(viewsets.ModelViewSet):
