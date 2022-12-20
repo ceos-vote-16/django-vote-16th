@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.views import APIView
@@ -61,37 +62,43 @@ class TeamView(APIView):
         return JsonResponse(custom_response(404), status=404)
 
 
-class CendidateView(APIView):
-    def get(self, request):
-        try:
-            cendidates = Cendidate.objects.all()
-            serializer = CendidateSerializer(cendidates, many=True)
-            return JsonResponse(custom_response(200, serializer.data), status=200)
-        except:
-            return JsonResponse(custom_response(401), status=401)
+class CandidateViewSet(viewsets.ModelViewSet):
+    serializer_class = CandidateSerializer
+    queryset = Candidate.objects.all()
 
-    def post(self, request):
-        # cendidate valid check
-        cendidate_name = request.data.get("cendidatename")
-        chosen_cendidate = Cendidate.objects.get(name=cendidate_name)
-        if chosen_cendidate is None:
-            return JsonResponse(custom_response(400), status=400)
+    filter_backends = (DjangoFilterBackend, OrderingFilter)
+    ordering_fields = ['count', 'name']
+    ordering = ['name']
 
-        # user valid check
-        user_name = request.data.get("username")
-        chosen_user = User.objects.get(username=user_name)
-        if chosen_user is None:
-            return JsonResponse(custom_response(400), status=400)
+    frontend_condition = ["FE", "Frontend"]
+    backend_condition = ["BE", "Backend"]
 
-        # part valid check
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        lookup_part = self.request.query_params.get("part")
+        if lookup_part == "FE" or lookup_part == "Frontend":
+            queryset = queryset.filter(part__in=self.frontend_condition)
+        elif lookup_part == "BE" or lookup_part == "Backend":
+            queryset = queryset.filter(part__in=self.backend_condition)
+        return queryset
 
-        chosen_cendidate.count = chosen_cendidate.count + 1
-        chosen_cendidate.save()
-        cendidate_vote_serializer = CendidateVoteSerializer(data={
-            'userPk': chosen_user.id,
-            'cendidatePk': chosen_cendidate.id
-        })
-        if cendidate_vote_serializer.is_valid():
-            cendidate_vote_serializer.save()
-            return JsonResponse(custom_response(200), status=200)
-        return JsonResponse(custom_response(404), status=404)
+    def put(self, pk=None):
+        lookup_value = self.request.data
+        if not lookup_value:
+            raise ValidationError("This field is mandatory")
+
+        candidate = self.get_queryset().get(**lookup_value)
+        if not candidate:
+            raise ValidationError("There's no such candidate")
+        else:
+            user = self.request.user
+            candidate.count = candidate.count + 1
+            candidate.save()
+            candidate_vote_serializer = CandidateVoteSerializer(data={
+                'userPk': user.id,
+                'candidatePk': candidate.id
+            })
+            if candidate_vote_serializer.is_valid():
+                candidate_vote_serializer.save()
+                return JsonResponse(custom_response(200), status=200)
+            return JsonResponse(custom_response(404), status=404)

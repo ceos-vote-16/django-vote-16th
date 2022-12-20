@@ -35,13 +35,13 @@ class TeamVoteSerializer(serializers.ModelSerializer):
         fields = ['userPk', 'teamPk']
 
 
-class CendidateSerializer(serializers.ModelSerializer):
+class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cendidate
+        model = Candidate
         fields = ['name', 'count', 'part']
 
 
-class CendidateVoteSerializer(serializers.ModelSerializer):
+class CandidateVoteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CendidateVote
-        fields = ['userPk', 'cendidatePk']
+        model = CandidateVote
+        fields = ['userPk', 'candidatePk']

@@ -7,11 +7,11 @@ router = routers.DefaultRouter()
 
 # router
 # router.register('user', UserViewSet)
+router.register(r'votes/candidates', CandidateViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('dj_rest_auth.urls')),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
     path('votes/teams/', TeamView.as_view()),
-    path('votes/cendidates/', CendidateView.as_view())
 ]
