@@ -112,7 +112,7 @@ JWT_AUTH = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = (
-    # "https://example.com",
+    "http://3.38.123.37",
     "http://localhost:3000",
     "http://127.0.0.1:8000"
 )
