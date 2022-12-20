@@ -2,6 +2,7 @@ from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth import serializers as auth_serializers
 from api.models import *
+from api.validator import user_register_input_validation
 
 
 class RegisterCustomSerializer(RegisterSerializer):
@@ -9,6 +10,18 @@ class RegisterCustomSerializer(RegisterSerializer):
     # 추가 설정 필드: team, part
     team = serializers.CharField()
     part = serializers.CharField()
+
+    def get_cleaned_data(self):
+        data = super().get_cleaned_data()
+        data['team'] = self.validated_data.get('team', '')
+        data['part'] = self.validated_data.get('part', '')
+        return data
+
+    def validate(self, data):
+        super().validate(data)
+        if not user_register_input_validation(data):
+            raise serializers.ValidationError("Part or Team name is invalid")
+        return data
 
 
 class UserDetailCustomSerializer(auth_serializers.UserDetailsSerializer):
@@ -18,16 +31,9 @@ class UserDetailCustomSerializer(auth_serializers.UserDetailsSerializer):
         read_only_fields = ('username',)
 
 
-
 class UserSerializer(serializers.ModelSerializer):
-    user_team = serializers.SerializerMethodField()
-    user_part = serializers.SerializerMethodField()
-    created_at = serializers.SerializerMethodField()
-    deleted_at = serializers.SerializerMethodField()
-
     class Meta:
         model = User
-        # 추가 필요
         fields = ['username', 'email', 'password', 'is_active',
                   'team', 'part',
                   'created_at', 'deleted_at']
