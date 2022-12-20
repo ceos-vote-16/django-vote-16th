@@ -1,9 +1,24 @@
 from api.models import Candidate
 
+teams = ["Teample", "Forget Me Not.", "Pre:folio", "diaMEtes", "recipeasy"]
+parts = ["Backend", "Frontend"]
+
+
+def user_register_input_validation(lookup_value):
+    part = lookup_value.get('part')
+    if part not in parts:
+        return False
+
+    team = lookup_value.get('team')
+    if team not in teams:
+        return False
+
+    return True
+
 
 def candidate_put_input_validation(lookup_value):
     part = lookup_value.get("part")
-    if part != "Backend" and part != "Frontend":
+    if part not in parts:
         return False
 
     name = lookup_value.get("name")
@@ -14,8 +29,6 @@ def candidate_put_input_validation(lookup_value):
 
 
 def team_put_input_validation(lookup_value):
-    teams = ["Teample", "Forget Me Not.", "Pre:folio", "diaMEtes", "recipeasy"]
-    for team in teams:
-        if team == lookup_value:
-            return True
+    if lookup_value.get('team') in teams:
+        return True
     return False
