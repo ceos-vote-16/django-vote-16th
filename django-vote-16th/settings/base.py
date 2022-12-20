@@ -72,6 +72,7 @@ JWT_AUTH_REFRESH_COOKIE = 'api-refresh-token'
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_LOGOUT_ON_GET = True
 
 ACCOUNT_ADAPTER = 'api.adapters.CustomAccountAdapter'
 
