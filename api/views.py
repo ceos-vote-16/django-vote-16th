@@ -4,12 +4,14 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
 
 from api.common import custom_response
+from api.permission import IsAuthenticatedInPutReq
 from api.serializers import *
 from api.utils.filters import *
-from api.validator import candidate_put_input_validation
+from api.validator import candidate_put_input_validation, team_put_input_validation
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -32,7 +34,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = TeamSerializer
     queryset = Team.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedInPutReq]
 
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     ordering_fields = ['count', 'name']
@@ -42,10 +44,9 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     def put(self, pk=None):
         try:
-            # 검사 추가
             lookup_value = self.request.data.get(self.lookup_body_field)
-            if not lookup_value:
-                raise ValidationError({self.lookup_body_field: "This field is mandatory"})
+            if not team_put_input_validation(lookup_value):
+                return JsonResponse(custom_response(400), status=400)
 
             team = self.get_queryset().filter(**{self.lookup_body_field: lookup_value}).last()
             if not team:
@@ -69,7 +70,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 class CandidateViewSet(viewsets.ModelViewSet):
     serializer_class = CandidateSerializer
     queryset = Candidate.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedInPutReq]
 
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     ordering_fields = ['count', 'name']
