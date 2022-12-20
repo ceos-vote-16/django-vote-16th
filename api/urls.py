@@ -8,8 +8,11 @@ router = routers.DefaultRouter()
 # router
 # router.register('user', UserViewSet)
 
+router.register(r'votes/candidates', CandidateViewSet)
+router.register('votes/teams', TeamViewSet, basename='Team-ViewSet')
+
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('dj_rest_auth.urls')),
-    path('auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('auth/registration/', include('dj_rest_auth.registration.urls'))
 ]
