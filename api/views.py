@@ -32,6 +32,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = TeamSerializer
     queryset = Team.objects.all()
+    permission_classes = [IsAuthenticated]
 
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     ordering_fields = ['count', 'name']
@@ -60,6 +61,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 class CandidateViewSet(viewsets.ModelViewSet):
     serializer_class = CandidateSerializer
     queryset = Candidate.objects.all()
+    permission_classes = [IsAuthenticated]
 
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     ordering_fields = ['count', 'name']
