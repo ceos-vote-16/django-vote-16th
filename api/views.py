@@ -1,16 +1,15 @@
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework.views import APIView
 
 from api.common import custom_response
 from api.serializers import *
 from api.utils.filters import *
+from api.validator import candidate_put_input_validation
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -35,7 +34,6 @@ class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
 
     filter_backends = (DjangoFilterBackend, OrderingFilter)
-    # filterset_class = TeamFilter
     ordering_fields = ['count', 'name']
     ordering = ['name']
 
@@ -53,10 +51,11 @@ class TeamViewSet(viewsets.ModelViewSet):
             self.kwargs['pk'] = obj.pk
 
             self.request.data._mutable = True
-            self.request.data['count'] = obj.count+1
+            self.request.data['count'] = obj.count + 1
             self.request.data._mutable = False
 
             return self.update(request=self.request)
+
 
 class CandidateViewSet(viewsets.ModelViewSet):
     serializer_class = CandidateSerializer
@@ -79,15 +78,13 @@ class CandidateViewSet(viewsets.ModelViewSet):
         return queryset
 
     def put(self, pk=None):
-        lookup_value = self.request.data
-        if not lookup_value:
-            raise ValidationError("This field is mandatory")
+        try:
+            lookup_value = self.request.data
+            if not candidate_put_input_validation(lookup_value):
+                return JsonResponse(custom_response(400), status=400)
 
-        candidate = self.get_queryset().get(**lookup_value)
-        if not candidate:
-            raise ValidationError("There's no such candidate")
-        else:
             user = self.request.user
+            candidate = self.get_queryset().get(**lookup_value)
             candidate.count = candidate.count + 1
             candidate.save()
             candidate_vote_serializer = CandidateVoteSerializer(data={
@@ -97,4 +94,6 @@ class CandidateViewSet(viewsets.ModelViewSet):
             if candidate_vote_serializer.is_valid():
                 candidate_vote_serializer.save()
                 return JsonResponse(custom_response(200), status=200)
+            return JsonResponse(custom_response(404), status=404)
+        except:
             return JsonResponse(custom_response(404), status=404)
