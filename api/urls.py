@@ -6,8 +6,7 @@ from .views import *
 router = routers.DefaultRouter()
 
 # router
-# router.register('user', UserViewSet)
-
+router.register('users', UserViewSet)
 router.register(r'votes/candidates', CandidateViewSet)
 router.register('votes/teams', TeamViewSet, basename='Team-ViewSet')
 
