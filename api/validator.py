@@ -11,3 +11,11 @@ def candidate_put_input_validation(lookup_value):
     if not candidate:
         return False
     return True
+
+
+def team_put_input_validation(lookup_value):
+    teams = ["Teample", "Forget Me Not.", "Pre:folio", "diaMEtes", "recipeasy"]
+    for team in teams:
+        if team == lookup_value:
+            return True
+    return False
