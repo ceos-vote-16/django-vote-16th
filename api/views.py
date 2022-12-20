@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from api.common import custom_response
 from api.serializers import *
 from api.utils.filters import *
+from api.validator import candidate_put_input_validation
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -50,10 +51,11 @@ class TeamViewSet(viewsets.ModelViewSet):
             self.kwargs['pk'] = obj.pk
 
             self.request.data._mutable = True
-            self.request.data['count'] = obj.count+1
+            self.request.data['count'] = obj.count + 1
             self.request.data._mutable = False
 
             return self.update(request=self.request)
+
 
 class CandidateViewSet(viewsets.ModelViewSet):
     serializer_class = CandidateSerializer
@@ -78,7 +80,7 @@ class CandidateViewSet(viewsets.ModelViewSet):
     def put(self, pk=None):
         try:
             lookup_value = self.request.data
-            if not lookup_value:
+            if not candidate_put_input_validation(lookup_value):
                 return JsonResponse(custom_response(400), status=400)
 
             user = self.request.user
