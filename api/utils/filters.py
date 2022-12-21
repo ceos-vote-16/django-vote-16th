@@ -9,3 +9,11 @@ class UserFilter(FilterSet):
     class Meta:
         model = User
         fields = ['part', 'team']
+
+
+class CandidateFilter(FilterSet):
+    part = filters.CharFilter(field_name='part', lookup_expr='icontains')
+
+    class Meta:
+        model = Candidate
+        fields = ['part']

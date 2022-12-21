@@ -31,7 +31,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'api.User'
 
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     # third party
     'django_filters',
     'rest_framework',
+    # 'rest_framework_simplejwt.token_blacklist',
     # auth
     'rest_framework.authtoken',
     'dj_rest_auth',
@@ -61,17 +62,26 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'dj_rest_auth.registration',
+    # cors
+    'corsheaders',
 ]
 SITE_ID = 1
 
+# LOGIN_REDIRECT_URL = '/'
+# LOGOUT_REDIRECT_URL = '/'
+
 REST_USE_JWT = True
+REST_SESSION_LOGIN = True
+
 JWT_AUTH_COOKIE = 'api-auth'
 JWT_AUTH_REFRESH_COOKIE = 'api-refresh-token'
+JWT_AUTH_SECURE = True
+JWT_AUTH_SAMESITE = 'Strict'
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_EMAIL_REQUIRED = True
 
-ACCOUNT_ADAPTER = 'api.adapters.CustomAccountAdapter'
+ACCOUNT_ADAPTER = 'api.utils.adapters.CustomAccountAdapter'
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api.serializers.UserDetailCustomSerializer',
@@ -86,14 +96,24 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-    ),
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+    )
+    # 'DEFAULT_RENDERER_CLASSES': [
+    #     'api.common.CustomRenderer',
+    # ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
 JWT_AUTH = {
@@ -104,7 +124,18 @@ JWT_AUTH = {
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=3),
 }
 
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_WHITELIST = (
+    "http://3.38.123.37",
+    "http://localhost:3000",
+    "http://127.0.0.1:8000"
+)
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -165,7 +196,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
