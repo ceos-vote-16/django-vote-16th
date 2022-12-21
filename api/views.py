@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 
 from api.utils.common import custom_response, CustomRenderer
 from api.utils.permission import IsAuthenticatedInPutReq
