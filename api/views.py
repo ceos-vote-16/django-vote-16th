@@ -5,11 +5,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import viewsets
 
-from api.common import custom_response, CustomRenderer
-from api.permission import IsAuthenticatedInPutReq
+from api.utils.common import custom_response, CustomRenderer
+from api.utils.permission import IsAuthenticatedInPutReq
 from api.serializers import *
 from api.utils.filters import *
-from api.validator import candidate_put_input_validation, team_put_input_validation
+from api.utils.validator import candidate_put_input_validation, team_put_input_validation
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -80,18 +80,6 @@ class CandidateViewSet(viewsets.ModelViewSet):
     filterset_class = CandidateFilter
     ordering_fields = ['count', 'name']
     ordering = ['name']
-
-    frontend_condition = ["FE", "Frontend"]
-    backend_condition = ["BE", "Backend"]
-
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     lookup_part = self.request.query_params.get("part")
-    #     if lookup_part == "FE" or lookup_part == "Frontend":
-    #         queryset = queryset.filter(part__in=self.frontend_condition)
-    #     elif lookup_part == "BE" or lookup_part == "Backend":
-    #         queryset = queryset.filter(part__in=self.backend_condition)
-    #     return queryset
 
     def update(self, request, *args, **kwargs):
         self.put(self)

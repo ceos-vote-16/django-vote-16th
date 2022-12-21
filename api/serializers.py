@@ -2,7 +2,7 @@ from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth import serializers as auth_serializers
 from api.models import *
-from api.validator import user_register_input_validation
+from api.utils.validator import user_register_input_validation
 
 
 class RegisterCustomSerializer(RegisterSerializer):

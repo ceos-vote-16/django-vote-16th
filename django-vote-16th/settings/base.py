@@ -77,9 +77,8 @@ JWT_AUTH_REFRESH_COOKIE = 'api-refresh-token'
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_LOGOUT_ON_GET = True
 
-ACCOUNT_ADAPTER = 'api.adapters.CustomAccountAdapter'
+ACCOUNT_ADAPTER = 'api.utils.adapters.CustomAccountAdapter'
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api.serializers.UserDetailCustomSerializer',
@@ -94,7 +93,6 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        # 'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
