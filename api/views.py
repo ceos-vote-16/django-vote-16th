@@ -92,6 +92,9 @@ class CandidateViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(part__in=self.backend_condition)
         return queryset
 
+    def update(self, request, *args, **kwargs):
+        self.put(self)
+
     def put(self, pk=None):
         try:
             lookup_value = self.request.data
