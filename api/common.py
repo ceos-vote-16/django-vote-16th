@@ -8,6 +8,7 @@ def custom_response(status_code, data=[]):
     elif status_code < 400:
         message = ""
     else:
+        print(status_code)
         if status_code == 400:
             message = "잘못된 요청입니다."
         elif status_code == 401:

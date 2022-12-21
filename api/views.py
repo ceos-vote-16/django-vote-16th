@@ -43,11 +43,11 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     def put(self, pk=None):
         try:
-            lookup_value = self.request.data.get(self.lookup_body_field)
+            lookup_value = self.request.data
             if not team_put_input_validation(lookup_value):
                 return JsonResponse(custom_response(400), status=400)
 
-            team = self.get_queryset().filter(**{self.lookup_body_field: lookup_value}).last()
+            team = self.get_queryset().filter(**{self.lookup_body_field: lookup_value.get(self.lookup_body_field)}).last()
             if not team:
                 return JsonResponse(custom_response(404), status=404)
             else:
@@ -91,14 +91,18 @@ class CandidateViewSet(viewsets.ModelViewSet):
     def put(self, pk=None):
         try:
             lookup_value = self.request.data
-            # if not candidate_put_input_validation(lookup_value):
-            #     return JsonResponse(custom_response(400), status=400)
+            if not candidate_put_input_validation(lookup_value):
+                return JsonResponse(custom_response(400), status=400)
 
+            # user_input.ver
             username = lookup_value.get("user")
+            user = User.objects.get(username=username)
             name = lookup_value.get("name")
             part = lookup_value.get("part")
-            user = User.objects.get(username=username)
+            # # request.ver
+            # user = self.request.user
             candidate = self.get_queryset().get(name=name, part=part)
+
             candidate.count = candidate.count + 1
             candidate.save()
             candidate_vote_serializer = CandidateVoteSerializer(data={

@@ -1,7 +1,7 @@
 from api.models import Candidate
 
 teams = ["Teample", "Forget Me Not.", "Pre:folio", "diaMEtes", "recipeasy"]
-parts = ["Backend", "Frontend"]
+parts = ['Backend', "Frontend"]
 
 
 def user_register_input_validation(lookup_value):
@@ -23,12 +23,13 @@ def candidate_put_input_validation(lookup_value):
 
     name = lookup_value.get("name")
     candidate = Candidate.objects.filter(name=name)
+
     if not candidate:
         return False
     return True
 
 
 def team_put_input_validation(lookup_value):
-    if lookup_value.get('team') in teams:
+    if lookup_value.get("name") in teams:
         return True
     return False
