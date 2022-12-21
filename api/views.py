@@ -47,7 +47,8 @@ class TeamViewSet(viewsets.ModelViewSet):
             if not team_put_input_validation(lookup_value):
                 return JsonResponse(custom_response(400), status=400)
 
-            team = self.get_queryset().filter(**{self.lookup_body_field: lookup_value.get(self.lookup_body_field)}).last()
+            team = self.get_queryset().filter(
+                **{self.lookup_body_field: lookup_value.get(self.lookup_body_field)}).last()
             if not team:
                 return JsonResponse(custom_response(404), status=404)
             else:
@@ -69,7 +70,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 class CandidateViewSet(viewsets.ModelViewSet):
     serializer_class = CandidateSerializer
     queryset = Candidate.objects.all()
-    # permission_classes = [IsAuthenticatedInPutReq]
+    permission_classes = [IsAuthenticatedInPutReq]
     renderer_classes = [CustomRenderer]
 
     filter_backends = (DjangoFilterBackend, OrderingFilter)
@@ -94,13 +95,9 @@ class CandidateViewSet(viewsets.ModelViewSet):
             if not candidate_put_input_validation(lookup_value):
                 return JsonResponse(custom_response(400), status=400)
 
-            # user_input.ver
-            username = lookup_value.get("user")
-            user = User.objects.get(username=username)
             name = lookup_value.get("name")
             part = lookup_value.get("part")
-            # # request.ver
-            # user = self.request.user
+            user = self.request.user
             candidate = self.get_queryset().get(name=name, part=part)
 
             candidate.count = candidate.count + 1

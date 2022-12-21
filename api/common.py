@@ -3,6 +3,7 @@ from rest_framework.renderers import JSONRenderer
 
 
 def custom_response(status_code, data=[]):
+    message = ""
     if status_code < 300:
         message = "SUCCESS"
     elif status_code < 400:
