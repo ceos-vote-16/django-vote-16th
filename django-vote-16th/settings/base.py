@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     # third party
     'django_filters',
     'rest_framework',
+    # 'rest_framework_simplejwt.token_blacklist',
     # auth
     'rest_framework.authtoken',
     'dj_rest_auth',
@@ -74,6 +75,8 @@ REST_SESSION_LOGIN = True
 
 JWT_AUTH_COOKIE = 'api-auth'
 JWT_AUTH_REFRESH_COOKIE = 'api-refresh-token'
+# JWT_AUTH_SECURE = True
+JWT_AUTH_SAMESITE = 'Strict'
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_EMAIL_REQUIRED = True
@@ -96,13 +99,21 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
     )
     # 'DEFAULT_RENDERER_CLASSES': [
     #     'api.common.CustomRenderer',
     # ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
 JWT_AUTH = {
@@ -114,6 +125,8 @@ JWT_AUTH = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = (
     "http://3.38.123.37",
