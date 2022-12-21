@@ -41,6 +41,9 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     lookup_body_field = 'name'
 
+    def update(self, request, *args, **kwargs):
+        self.put(self)
+
     def put(self, pk=None):
         try:
             lookup_value = self.request.data
