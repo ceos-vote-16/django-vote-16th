@@ -1,9 +1,13 @@
+from dj_rest_auth.views import LogoutView
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.views import APIView
 
 from api.utils.common import custom_response, CustomRenderer
 from api.utils.permission import IsAuthenticatedInPutReq
@@ -108,3 +112,26 @@ class CandidateViewSet(viewsets.ModelViewSet):
                 return JsonResponse(custom_response(404), status=404)
         except:
             return JsonResponse(custom_response(404), status=404)
+
+
+class LogoutCustomView(APIView):
+    def post(self, request, *args, **kwargs):
+        return self.logoutCustom(request)
+
+    def logoutCustom(self, request):
+        from django.contrib.auth import logout as django_logout
+        from django.utils.translation import gettext_lazy as _
+
+        try:
+            request.user.auth_token.delete()
+        except (AttributeError, ObjectDoesNotExist):
+            pass
+
+        if getattr(settings, 'REST_SESSION_LOGIN', True):
+            django_logout(request)
+
+        response = Response(
+            {'detail': _('Successfully logged out.')},
+            status=status.HTTP_200_OK,
+        )
+        return response
