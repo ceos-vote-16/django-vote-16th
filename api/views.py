@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 
 from api.common import custom_response, CustomRenderer
 from api.permission import IsAuthenticatedInPutReq
@@ -101,20 +101,21 @@ class CandidateViewSet(viewsets.ModelViewSet):
             if not candidate_put_input_validation(lookup_value):
                 return JsonResponse(custom_response(400), status=400)
 
-            name = lookup_value.get("name")
-            part = lookup_value.get("part")
-            user = self.request.user
+            name, part = lookup_value.get("name"), lookup_value.get("part")
             candidate = self.get_queryset().get(name=name, part=part)
-
-            candidate.count = candidate.count + 1
-            candidate.save()
-            candidate_vote_serializer = CandidateVoteSerializer(data={
-                'userPk': user.id,
-                'candidatePk': candidate.id
-            })
-            if candidate_vote_serializer.is_valid():
-                candidate_vote_serializer.save()
-                return JsonResponse(custom_response(200), status=200)
-            return JsonResponse(custom_response(404), status=404)
+            if not candidate:
+                return JsonResponse(custom_response(404), status=404)
+            else:
+                user = self.request.user
+                candidate.count = candidate.count + 1
+                candidate.save()
+                candidate_vote_serializer = CandidateVoteSerializer(data={
+                    'userPk': user.id,
+                    'candidatePk': candidate.id
+                })
+                if candidate_vote_serializer.is_valid():
+                    candidate_vote_serializer.save()
+                    return JsonResponse(custom_response(200), status=200)
+                return JsonResponse(custom_response(404), status=404)
         except:
             return JsonResponse(custom_response(404), status=404)
