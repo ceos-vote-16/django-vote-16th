@@ -1,4 +1,5 @@
 ### 배포 
+
 http://3.38.123.37/api/
 *****
 
@@ -6,7 +7,7 @@ http://3.38.123.37/api/
 <img width="800" alt="스크린샷 2022-12-22 오후 8 40 37" src="https://user-images.githubusercontent.com/62806067/209127037-06e00c10-aa87-424a-a8a5-1057250e768c.png">
 
 ### API명세서
-
+#### [Teample API 명세서](https://www.notion.so/shjeong1026/CEOS-VOTE-API-4c84ab53d37a47f39855092265495f3f)
 *****
 
 ### 회원가입/로그인
