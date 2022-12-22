@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     # 'rest_framework_simplejwt.token_blacklist',
+    'rest_framework_simplejwt',
     # auth
     'rest_framework.authtoken',
     'dj_rest_auth',
@@ -75,8 +76,13 @@ REST_SESSION_LOGIN = True
 
 JWT_AUTH_COOKIE = 'api-auth'
 JWT_AUTH_REFRESH_COOKIE = 'api-refresh-token'
-JWT_AUTH_SECURE = True
-JWT_AUTH_SAMESITE = 'Strict'
+# JWT_AUTH_SECURE = True
+# JWT_AUTH_SAMESITE = 'Strict'
+
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SAMESITE = 'None'
+# SESSION_COOKIE_SAMESITE = 'None'
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_EMAIL_REQUIRED = True
@@ -102,7 +108,7 @@ REST_FRAMEWORK = {
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     )
     # 'DEFAULT_RENDERER_CLASSES': [
     #     'api.common.CustomRenderer',
